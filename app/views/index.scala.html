@@ -1,0 +1,176 @@
+@()(implicit request: RequestHeader)
+
+@main("Welcome to Play 2.1") {
+
+
+    <script type="text/javascript" charset="utf-8">
+
+    $(function() {
+
+            var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+            var socket = new WS("@routes.Application.lotto().webSocketURL()")
+
+
+
+            var i = 1
+            var receiveEvent = function(event) {
+
+                var member = JSON.parse(event.data)
+                $("#name" ).hide()
+                $("#img" + i).attr("src", member.photo)
+                $("#img" + i).hide().one('load', function() { //Set something to run when it finishes loading
+                    $("#name").text(member.name)
+                    $(this).fadeIn(); //Fade it in when loaded
+                    $("#name").fadeIn()
+                    i++
+                    if (i > 12) i = 1
+                })
+
+            }
+
+            socket.onmessage = receiveEvent
+            socket.onclose = function(event) {
+                // Stop the rotation
+                for (z=1; z < 13; z++) {
+                    $("#img"+z).fadeOut()
+                }
+                var winner = i - 1
+                if (winner == 0)
+                    winner = 1
+
+                $("#img"+ winner).fadeIn()
+            }
+
+     })
+    </script>
+
+
+    <style>
+
+        h1 {
+            font-size: 36pt;
+            text-align: center;
+            position: relative;
+            top: 400px;
+            }
+            #container {
+            width: 100%;
+            height: 700px;
+            -webkit-perspective: 800; /* For compatibility with iPhone 3.0, we leave off the units here */
+            -webkit-perspective-origin: 50% 225px;
+            }
+            #stage {
+            width: 100%;
+            height: 100%;
+            -webkit-transition: -webkit-transform 2s;
+            -webkit-transform-style: preserve-3d;
+            }
+
+            #shape {
+            position: relative;
+            top: 160px;
+            margin: 0 auto;
+            height: 200px;
+            width: 200px;
+            -webkit-transform-style: preserve-3d;
+            }
+
+            .plane {
+            position: absolute;
+            height: 200px;
+            width: 200px;
+            border: 1px solid white;
+            -webkit-border-radius: 12px;
+            -webkit-box-sizing: border-box;
+            text-align: center;
+            font-family: Times, serif;
+            font-size: 124pt;
+            color: black;
+            background-color: rgba(255, 255, 255, 0.6);
+            -webkit-transition: -webkit-transform 2s, opacity 2s;
+            -webkit-backface-visibility: hidden;
+            }
+
+            #shape.backfaces .plane {
+            -webkit-backface-visibility: visible;
+            }
+
+            #shape {
+            -webkit-animation: spin 8s infinite linear;
+            }
+
+            @@-webkit-keyframes spin {
+            from { -webkit-transform: rotateY(0); }
+            to   { -webkit-transform: rotateY(-360deg); }
+            }
+
+            .ring > .one {
+            -webkit-transform: translateZ(380px);
+            }
+
+            .ring > .two {
+            -webkit-transform: rotateY(30deg) translateZ(380px);
+            }
+
+            .ring > .three {
+            -webkit-transform: rotateY(60deg) translateZ(380px);
+            }
+
+            .ring > .four {
+            -webkit-transform: rotateY(90deg) translateZ(380px);
+            }
+
+            .ring > .five {
+            -webkit-transform: rotateY(120deg) translateZ(380px);
+            }
+
+            .ring > .six {
+            -webkit-transform: rotateY(150deg) translateZ(380px);
+        }
+
+        .ring > .seven {
+        -webkit-transform: rotateY(180deg) translateZ(380px);
+        }
+
+        .ring > .eight {
+        -webkit-transform: rotateY(210deg) translateZ(380px);
+        }
+
+        .ring > .nine {
+        -webkit-transform: rotateY(-120deg) translateZ(380px);
+        }
+
+        .ring > .ten {
+        -webkit-transform: rotateY(-90deg) translateZ(380px);
+        }
+
+        .ring > .eleven {
+        -webkit-transform: rotateY(300deg) translateZ(380px);
+        }
+
+        .ring > .twelve {
+        -webkit-transform: rotateY(330deg) translateZ(380px);
+        }
+    </style>
+
+    <div id="container">
+
+    <div id="stage" style="-webkit-transform: translateZ(-200px); ">
+        <div id="shape" class="backfaces ring">
+            <div class="plane one"><div style="width: 300px; margin: auto;text-align: center"><img id="img1" style="height:200px " src=""/></div></div>
+            <div class="plane two"><div style="width: 300px; margin: auto;text-align: center"><img id="img2" style="height:200px " src=""/></div></div>
+            <div class="plane three"><div style="width: 300px; margin: auto;text-align: center"><img id="img3" style="height:200px " src=""/></div></div>
+            <div class="plane four"><div style="width: 300px; margin: auto;text-align: center"><img id="img4" style="height:200px " src=""/></div></div>
+            <div class="plane five"><div style="width: 300px; margin: auto;text-align: center"><img id="img5" style="height:200px " src=""/></div></div>
+            <div class="plane six"><div style="width: 300px; margin: auto;text-align: center"><img id="img6" style="height:200px " src=""/></div></div>
+            <div class="plane seven"><div style="width: 300px; margin: auto;text-align: center"><img id="img7" style="height:200px " src=""/></div></div>
+            <div class="plane eight"><div style="width: 300px; margin: auto;text-align: center"><img id="img8" style="height:200px " src=""/></div></div>
+            <div class="plane nine"><div style="width: 300px; margin: auto;text-align: center"><img id="img9" style="height:200px " src=""/></div></div>
+            <div class="plane ten"><div style="width: 300px; margin: auto;text-align: center"><img id="img10" style="height:200px " src=""/></div></div>
+            <div class="plane eleven"><div style="width: 300px; margin: auto;text-align: center"><img id="img11" style="height:200px " src=""/></div></div>
+            <div class="plane twelve"><div style="width: 300px; margin: auto;text-align: center"><img id="img12" style="height:200px " src=""/></div></div>
+        </div>
+        <h1 id="name">
+    </div>
+    </div>
+}
